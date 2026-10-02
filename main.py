@@ -9,9 +9,7 @@ import math
 
 # search an unordered list L for a key x using iterate
 def isearch(L, x):
-    ###TODO
-    ###
-    pass
+    return iterate(lambda found, y: found or y == x, False, L)
 
 def iterate(f, x, a):
     # done. do not change me.
@@ -22,9 +20,8 @@ def iterate(f, x, a):
 
 # search an unordered list L for a key x using reduce
 def rsearch(L, x):
-    ###TODO
-    ###
-    pass
+    # map each element to True/False, then reduce with "or"
+    return reduce(lambda a, b: a or b, False, list(map(lambda y: y == x, L)))
 
 def reduce(f, id_, a):
     print(a)
