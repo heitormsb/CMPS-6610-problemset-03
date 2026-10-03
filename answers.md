@@ -78,6 +78,43 @@ Place all written answers from `problemset-03.md` here for easier grading.
 
 - **2a.**
 
+  ```
+  dedup A =
+      let
+          addFirst (D, i) =
+              if A[i] ∈ D then
+                  D
+              else
+                  D ∪ {A[i] ↦ i}
+
+          first = iterate addFirst {} ⟨0, ..., |A|-1⟩
+      in
+          ⟨ A[i] : 0 ≤ i < |A| | first[A[i]] = i ⟩
+      end
+  ```
+
+  e.g. dedup ⟨3, 1, 3, 2, 1⟩ ⇒ ⟨3, 1, 2⟩
+
+  First, iterate goes through the indices of A from left to right and builds
+  a hash table first, where first[x] is the index of the first x in A.
+  If A[i] is already in D, it is a duplicate, so D does not change.
+  D ∪ {A[i] ↦ i} is an insertion in the hash table, so it costs O(1) (expected).
+
+  Then, filter keeps A[i] only if i is the first index of A[i].
+  filter keeps the order, so the output has the distinct elements in the same order as A.
+
+  Work:
+  iterate: each step costs O(1).
+  W(n) = W(n-1) + 1 E O(n)
+  filter: each test first[A[i]] = i costs O(1), so W = O(n).
+  Total: W(n) = O(n) + O(n) = O(n)
+
+  Span:
+  iterate: each step needs D from the step before, so nothing runs in parallel.
+  S(n) = S(n-1) + 1 E O(n)
+  filter: S = O(logn).
+  Total: S(n) = O(n) + O(logn) = O(n)
+
 
 
 
