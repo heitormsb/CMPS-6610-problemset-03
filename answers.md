@@ -217,6 +217,16 @@ Place all written answers from `problemset-03.md` here for easier grading.
 
 - **3b.**
 
+  parens_update only checks the counter and adds -1, 0 or 1, so each call costs O(1).
+
+  Work:
+  iterate calls parens_update one time for each element.
+  W(n) = W(n-1) + 1 E O(n)
+
+  Span:
+  Each step needs the counter from the step before, so nothing runs in parallel.
+  S(n) = S(n-1) + 1 E O(n)
+
 
 
 

@@ -69,9 +69,7 @@ def parens_match_iterative(mylist):
     >>>parens_match_iterative(['('])
     False
     """
-    ### TODO
     return iterate(parens_update, 0, mylist) == 0
-    ###
 
 
 def parens_update(current_output, next_input):
@@ -86,9 +84,10 @@ def parens_update(current_output, next_input):
     Returns:
       the updated value of `current_output`
     """
-    ###TODO
-    ###
-    pass
+    # a negative counter means a ')' came before its '(', so it stays negative
+    if current_output < 0:
+        return current_output
+    return current_output + paren_map(next_input)
 
 #### Scan solution
 
