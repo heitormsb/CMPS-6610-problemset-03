@@ -108,9 +108,11 @@ def parens_match_scan(mylist):
     False
     
     """
-    ###TODO
-    ###
-    pass
+    # history[i] is the counter after position i, last is the final counter
+    history, last = scan(plus, 0, list(map(paren_map, mylist)))
+    # math.inf is the identity of min, so an empty list gives True
+    min_history = reduce(min_f, math.inf, history)
+    return last == 0 and min_history >= 0
 
 def scan(f, id_, a):
     """
@@ -177,13 +179,22 @@ def parens_match_dc_helper(mylist):
       L is the number of unmatched left parentheses. This output is used by 
       parens_match_dc to return the final True or False value
     """
-    ###TODO
     # base cases
-    
+    if len(mylist) == 0:
+        return (0, 0)
+    elif len(mylist) == 1:
+        if mylist[0] == '(':
+            return (0, 1)
+        elif mylist[0] == ')':
+            return (1, 0)
+        else:
+            return (0, 0)
+
     # recursive case
     # - first solve subproblems
-    
+    i, j = parens_match_dc_helper(mylist[:len(mylist)//2])
+    k, l = parens_match_dc_helper(mylist[len(mylist)//2:])
+
     # - then compute the solution (R,L) using these solutions, in constant time.
-    
-    ###
-    pass
+    # the j unmatched '(' on the left match the k unmatched ')' on the right
+    return (i + max(0, k - j), l + max(0, j - k))

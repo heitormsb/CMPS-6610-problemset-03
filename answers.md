@@ -142,8 +142,13 @@ Place all written answers from `problemset-03.md` here for easier grading.
   normal comparison of two elements and costs O(1)):
   ⟨(1, ⟨1, 1⟩), (2, ⟨1⟩), (3, ⟨1, 1⟩), (5, ⟨1⟩)⟩
   Each distinct element is a key one time in G, so we just take the keys.
-  collect sorts the keys, so the output is not in the order of the input,
-  but here the order does not matter.
+  collect sorts the keys, so the output is not in the order of the input.
+  The problem says that here we only care about the unique elements, without
+  regard to the order, so I do not keep it.
+  If we needed the order, we could use the pairs (x, index of x in B), keep the
+  smallest index of each group and sort by it (like in 2c). This gives ⟨3, 1, 2, 5⟩,
+  and the work and span stay the same, because the sort also costs
+  O(mn.log(mn)) work and O(log^2(mn)) span.
 
   Work:
   flatten: O(m + mn) = O(mn)
@@ -206,9 +211,10 @@ Place all written answers from `problemset-03.md` here for easier grading.
   S(n) = S(n/2) + n, root dominated, so S(n) E O(n)
   So reduce does not make the span smaller, and it also loses the order of 2a.
 
-  scan with ∪ would give the set of elements before each i. But if all elements
-  are distinct, these sets have sizes 1, 2, ..., n, so only writing the output
-  costs 1 + 2 + ... + n, and the work is Theta(n^2).
+  scan with ∪ would give the set of elements before each i. If each of these
+  sets is stored as its own hash table and all elements are distinct, they have
+  sizes 1, 2, ..., n, so only writing the output costs 1 + 2 + ... + n,
+  and the work is Theta(n^2).
 
 
 
@@ -233,11 +239,59 @@ Place all written answers from `problemset-03.md` here for easier grading.
 
 - **3d.**
 
+  parens_match_scan does one map, one scan and one reduce.
+  The scan gives the counter after each position (like in 3a). The parens match
+  if no counter is negative (the min is >= 0) and the last counter is 0.
+
+  map(paren_map):
+  Each element is changed to 1, -1 or 0 in parallel.
+  W = O(n), S = O(1)
+
+  scan(plus) with contraction:
+  We add each pair of neighbors in parallel, solve one subproblem of size n/2,
+  and then fix the output in parallel. plus costs O(1).
+  W(n) = W(n/2) + n
+  C(root) = n, C(level 1) = n/2, so it is root dominated.
+  W(n) E O(n)
+  S(n) = S(n/2) + 1
+  Every level costs 1 and there are logn levels, so it is balanced.
+  S(n) E O(logn)
+
+  reduce(min_f):
+  W(n) = 2W(n/2) + 1 E O(n)
+  S(n) = S(n/2) + 1 E O(logn)
+
+  Total:
+  W(n) = O(n) + O(n) + O(n) = O(n)
+  S(n) = O(1) + O(logn) + O(logn) = O(logn)
+
 
 
 
 
 - **3f.**
+
+  parens_match_dc_helper makes two recursive calls on the two halves.
+  The combine step only uses i, j, k, l:
+  R = i + max(0, k - j), L = l + max(0, j - k)
+  (the j unmatched '(' on the left match the k unmatched ')' on the right),
+  so it costs O(1). Splitting the list in two halves is subseq, which costs O(1)
+  in our cost model.
+
+  Work:
+  W(n) = 2W(n/2) + 1
+  C(root) = 1, C(level 1) = 2, so it is leaf dominated.
+  The tree has n leaves, one per element.
+  W(n) E O(n)
+
+  Span:
+  The two calls run in parallel, so we only wait for one of them.
+  S(n) = S(n/2) + 1
+  Every level costs 1 and there are logn levels, so it is balanced.
+  S(n) E O(logn)
+
+  These are the same recurrences as reduce in 1d, because this is the
+  generic divide and conquer from the slides with an O(1) combine.
 
 
 
